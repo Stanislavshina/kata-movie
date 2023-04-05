@@ -1,0 +1,9 @@
+.movies-list{  
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 36px;
+  
+  @media (max-width: 1130px) {
+   grid-template-columns: 1fr; 
+  }
+}
