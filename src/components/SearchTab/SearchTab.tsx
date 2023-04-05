@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import useFetchingMovies from '../../hooks/useFetchMovies';
 import { Input, Alert, Spin } from 'antd';
 import _ from 'lodash';
+
+import useFetchingMovies from '../../hooks/useFetchMovies';
 import './SearchTab.scss';
 import MovieList from '../MovieList/MovieList';
 
@@ -16,7 +17,7 @@ const SearchTab: React.FC = () => {
   }, [searchQuery]);
 
   const handleFetching = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value: string = event.target.value;
+    const { value } = event.target;
     setSearchQuery(value);
   };
 

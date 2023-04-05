@@ -63,7 +63,7 @@ const getMoviesWithGenres = async (data: Movie[]): Promise<Movie[]> => {
           api_key: apiKey,
         },
       });
-      const genres = response.data.genres;
+      const { genres } = response.data;
       return {
         ...el,
         genres,

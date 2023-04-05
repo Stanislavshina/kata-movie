@@ -1,18 +1,20 @@
 import React from 'react';
-import Rating from './Rating/Rating';
-import { Movie } from '../../types/Movie';
 import { Rate, Typography } from 'antd';
 import { format } from 'date-fns';
+
+import { Movie } from '../../types/Movie';
+
+import Rating from './Rating/Rating';
 import MoviePoster from './MoviePoster/MoviePoster';
 import './MovieItem.scss';
 
-export type MovieItem = {
+export type MovieItemProps = {
   movie: Movie;
 };
 
 const { Title, Paragraph } = Typography;
 
-const MovieItem: React.FC<MovieItem> = ({ movie }) => {
+const MovieItem: React.FC<MovieItemProps> = ({ movie }) => {
   const { genres, title, overview, poster_path, release_date, vote_average } = movie;
 
   const truncateText = (text: string, maxLength: number): string => {
@@ -22,12 +24,12 @@ const MovieItem: React.FC<MovieItem> = ({ movie }) => {
 
     const lastSpace = text.lastIndexOf(' ', maxLength);
     if (lastSpace === -1) {
-      return text.substr(0, maxLength) + '...';
+      return `${text.substring(0, maxLength)}...`;
     }
 
-    const trimmedText = text.substr(0, lastSpace);
+    const trimmedText = text.substring(0, lastSpace);
     if (trimmedText.length < text.length) {
-      return trimmedText + '...';
+      return `${trimmedText}...`;
     }
 
     return text;
