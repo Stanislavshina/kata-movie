@@ -1,8 +1,8 @@
-import { useState } from "react";
-import  axios  from "axios";
+import { useState } from 'react';
+import axios from 'axios';
 
-import { Movie } from "../types/Movie";
-import { useFetchMovies } from "../types/useFetchMovies";
+import { Movie } from '../types/Movie';
+import { useFetchMovies } from '../types/useFetchMovies';
 
 const apiKey = '3f4500495f42846a3bc4ece4dad1244b';
 
@@ -14,7 +14,6 @@ const useFetchingMovies = (): useFetchMovies => {
   const [totalPage, setTotalPage] = useState<number>(1);
 
   const fetchMovies = async (searchParam?: string, page?: number) => {
-
     try {
       setLoading(true);
 
@@ -33,8 +32,7 @@ const useFetchingMovies = (): useFetchMovies => {
       setMovies(moviesWithGenres);
       setPage(response.data.page);
       setTotalPage(response.data.total_pages);
-      setLoading(false)
-
+      setLoading(false);
     } catch (error) {
       setLoading(false);
       setError(`${error} - error`);
@@ -53,18 +51,13 @@ const useFetchingMovies = (): useFetchMovies => {
     page,
     totalPage,
     handlePageUp,
-    fetchMovies
-  }
-
-
+    fetchMovies,
+  };
 };
 
-
-const getMoviesWithGenres =async (data: Movie[]): Promise<Movie[]>=> {
-  
+const getMoviesWithGenres = async (data: Movie[]): Promise<Movie[]> => {
   const moviesWithGenres = await Promise.all(
     data.map(async (el) => {
-
       const response = await axios.get(`https://api.themoviedb.org/3/movie/${el.id}`, {
         params: {
           api_key: apiKey,
@@ -73,13 +66,12 @@ const getMoviesWithGenres =async (data: Movie[]): Promise<Movie[]>=> {
       const genres = response.data.genres;
       return {
         ...el,
-        genres
-      }
+        genres,
+      };
     })
   );
 
   return moviesWithGenres;
-
 };
 
-export default useFetchingMovies
+export default useFetchingMovies;

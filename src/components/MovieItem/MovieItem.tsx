@@ -4,15 +4,15 @@ import { Movie } from '../../types/Movie';
 import { Rate, Typography } from 'antd';
 import { format } from 'date-fns';
 import MoviePoster from './MoviePoster/MoviePoster';
-import './MovieItem.scss'
+import './MovieItem.scss';
 
 export type MovieItem = {
-  movie: Movie
-}
+  movie: Movie;
+};
 
 const { Title, Paragraph } = Typography;
 
-const MovieItem: React.FC<MovieItem> = ({movie}) => {
+const MovieItem: React.FC<MovieItem> = ({ movie }) => {
   const { genres, title, overview, poster_path, release_date, vote_average } = movie;
 
   const truncateText = (text: string, maxLength: number): string => {
@@ -56,9 +56,8 @@ const MovieItem: React.FC<MovieItem> = ({movie}) => {
           <Rating rating={vote_average} className={'movie-card__rating'} />
         </header>
         <Paragraph className="movie-card__info">{truncText}</Paragraph>
-        <Rate className="movie-card__rate" count={10} allowHalf defaultValue={0}/>
+        <Rate className="movie-card__rate" count={10} allowHalf defaultValue={0} />
       </div>
-    
     </li>
   );
 };

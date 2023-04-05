@@ -1,9 +1,8 @@
-.movie-card{
+.movie-card {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 20px;
-  grid-template-areas: 
-    "image content";
+  grid-template-areas: 'image content';
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
   position: relative;
   padding: 10px;
@@ -52,7 +51,7 @@
   flex-wrap: wrap;
   padding: 0;
   margin: 0;
-  list-style: none;;
+  list-style: none;
 }
 
 .movie-card__genres-list .genres-list__item {
@@ -61,8 +60,8 @@
   line-height: 1.2;
   color: #777;
   margin-right: 8px;
-  background: #FAFAFA;
-  border: 1px solid #D9D9D9;
+  background: #fafafa;
+  border: 1px solid #d9d9d9;
   border-radius: 2px;
   color: rgba(0, 0, 0, 0.65);
   padding: 3px;
@@ -90,20 +89,20 @@
 }
 
 @media (max-width: 560px) {
-    .movie-card{
-      grid-template-columns: 1fr;
-      &__img{
-        position: absolute;
-        max-width: 60px;
-        max-height: 91px;
-        top: 10px;
-        left: 10px;
-      }
-      &__header{
-        padding-left: 70px;
-      }
-      &__rate{
-        align-self: flex-end;
-      }
+  .movie-card {
+    grid-template-columns: 1fr;
+    &__img {
+      position: absolute;
+      max-width: 60px;
+      max-height: 91px;
+      top: 10px;
+      left: 10px;
     }
+    &__header {
+      padding-left: 70px;
+    }
+    &__rate {
+      align-self: flex-end;
+    }
+  }
 }
