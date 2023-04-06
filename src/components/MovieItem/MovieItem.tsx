@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Rate, Typography } from 'antd';
 import { format } from 'date-fns';
 
@@ -7,6 +7,7 @@ import { Movie } from '../../types/Movie';
 import Rating from './Rating/Rating';
 import MoviePoster from './MoviePoster/MoviePoster';
 import './MovieItem.scss';
+import { postRating } from '../../api/apiServices';
 
 export type MovieItemProps = {
   movie: Movie;
@@ -15,8 +16,29 @@ export type MovieItemProps = {
 const { Title, Paragraph } = Typography;
 
 const MovieItem: React.FC<MovieItemProps> = ({ movie }) => {
-  const { genres, title, overview, poster_path, release_date, vote_average } = movie;
+  const { genres, title, overview, poster_path, release_date, vote_average, id } = movie;
+  const [rate, setRate] = useState<number>(0)
 
+  const token: string | null = localStorage.getItem('token');
+
+  const tokenString = token ? token : null;
+
+
+  useEffect(()=>{
+    const getId = localStorage.getItem(id.toString())
+    
+    if(getId) {
+      setRate(Number(getId));
+      console.log(rate);
+      
+    }
+  },[])
+
+  const handleOnChange = (id: number, value: number) => {
+    setRate(value)
+    localStorage.setItem(id.toString(), value.toString());
+    postRating(id, value, tokenString)
+  }
   const truncateText = (text: string, maxLength: number): string => {
     if (text.length <= maxLength) {
       return text;
@@ -58,7 +80,13 @@ const MovieItem: React.FC<MovieItemProps> = ({ movie }) => {
           <Rating rating={vote_average} className={'movie-card__rating'} />
         </header>
         <Paragraph className="movie-card__info">{truncText}</Paragraph>
-        <Rate className="movie-card__rate" count={10} allowHalf defaultValue={0} />
+        <Rate
+          className="movie-card__rate"
+          count={10}
+          allowHalf
+          defaultValue={rate}
+          onChange={(value)=>handleOnChange(id, value)}
+        />
       </div>
     </li>
   );

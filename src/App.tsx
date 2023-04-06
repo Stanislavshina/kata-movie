@@ -3,8 +3,17 @@ import type { TabsProps } from 'antd';
 
 import SearchTab from './components/SearchTab/SearchTab';
 import './App.scss';
+import { getGuestSessions, getRatedMovies } from './api/apiServices';
+import { useEffect } from 'react';
 
 function App() {
+  const token: string = localStorage.getItem('token')
+
+  useEffect(()=>{
+    if(!token) getGuestSessions();
+    getRatedMovies(token)
+  },[])
+
   const moviesLists: TabsProps['items'] = [
     {
       key: '1',
