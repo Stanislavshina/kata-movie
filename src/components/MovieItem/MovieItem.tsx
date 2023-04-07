@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { Rate, Typography } from 'antd';
 import { format } from 'date-fns';
 
@@ -7,7 +7,8 @@ import { Movie } from '../../types/Movie';
 import Rating from './Rating/Rating';
 import MoviePoster from './MoviePoster/MoviePoster';
 import './MovieItem.scss';
-import { postRating } from '../../api/apiServices';
+import {  postRating } from '../../api/apiServices';
+import RatingContext from '../../context/context';
 
 export type MovieItemProps = {
   movie: Movie;
@@ -17,28 +18,15 @@ const { Title, Paragraph } = Typography;
 
 const MovieItem: React.FC<MovieItemProps> = ({ movie }) => {
   const { genres, title, overview, poster_path, release_date, vote_average, id } = movie;
-  const [rate, setRate] = useState<number>(0)
+  const { rating } = useContext(RatingContext);
 
   const token: string | null = localStorage.getItem('token');
+  const tokenString = token ? token : '' 
 
-  const tokenString = token ? token : null;
-
-
-  useEffect(()=>{
-    const getId = localStorage.getItem(id.toString())
-    
-    if(getId) {
-      setRate(Number(getId));
-      console.log(rate);
-      
-    }
-  },[])
-
-  const handleOnChange = (id: number, value: number) => {
-    setRate(value)
-    localStorage.setItem(id.toString(), value.toString());
-    postRating(id, value, tokenString)
+  const handleChange = (value: number) => {
+    postRating(id, value, tokenString);
   }
+
   const truncateText = (text: string, maxLength: number): string => {
     if (text.length <= maxLength) {
       return text;
@@ -84,8 +72,8 @@ const MovieItem: React.FC<MovieItemProps> = ({ movie }) => {
           className="movie-card__rate"
           count={10}
           allowHalf
-          defaultValue={rate}
-          onChange={(value)=>handleOnChange(id, value)}
+          defaultValue={rating}
+          onChange={(value) => handleChange(value)}
         />
       </div>
     </li>

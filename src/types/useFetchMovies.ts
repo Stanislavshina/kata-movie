@@ -6,6 +6,8 @@ export type useFetchMovies = {
   loading: boolean;
   page: number;
   totalPage: number;
+  ratedMovies: Movie[];
   handlePageUp: (searchParam: string, page: number) => void;
   fetchMovies: (searchParam?: string, page?: number) => void;
+  getRatedMovies: (sessionId: string) => void;
 };

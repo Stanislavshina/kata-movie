@@ -8,14 +8,16 @@ import './SearchTab.scss';
 import MovieList from '../MovieList/MovieList';
 
 const SearchTab: React.FC = () => {
-  const { movies, error, loading, page, totalPage, handlePageUp, fetchMovies } = useFetchingMovies();
+  const { movies, error, loading, page, totalPage, handlePageUp, fetchMovies} = useFetchingMovies();
   const [searchQuery, setSearchQuery] = useState('');
 
   const debouncedFetch = _.debounce(fetchMovies, 500);
 
+
+
   useEffect(() => {
     debouncedFetch(searchQuery);
-  }, [searchQuery]);
+  }, []);
 
   const handleFetching = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value: string = event.target.value;
