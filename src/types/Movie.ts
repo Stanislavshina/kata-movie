@@ -1,11 +1,11 @@
-type Genres = { id: number; name: string };
-
+import { Genres } from "./Genres";
 export type Movie = {
-  genres: Genres[];
-  id: number;
-  title: string;
-  vote_average: number;
-  overview: string;
-  poster_path: string;
-  release_date: string;
+  genres: Genres[],
+  genre_ids: string,
+  id: number,
+  title: string
+  vote_average: number,
+  overview: string,
+  poster_path: string,
+  release_date: string
 };

@@ -1,5 +1,6 @@
-import React from 'react';
+import { createContext } from "react";
+import { Genres } from "../types/Genres";
 
-const RatingContext = React.createContext(0);
+const { Provider, Consumer } = createContext<Genres[]>([]);
 
-export default RatingContext;
+export { Provider, Consumer };

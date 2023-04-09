@@ -1,123 +1,62 @@
-import { useState } from 'react';
-import axios from 'axios';
-
-import { Movie } from '../types/Movie';
-import { useFetchMovies } from '../types/useFetchMovies';
+import axios from "axios";
 
 const apiKey = '3f4500495f42846a3bc4ece4dad1244b';
+const statickUrl = 'https://api.themoviedb.org/3';
 
-const useFetchingMovies = (): useFetchMovies => {
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [error, setError] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
-  const [page, setPage] = useState<number>(1);
-  const [totalPage, setTotalPage] = useState<number>(1);
-  const [ratedMovies, setRatedMovies] = useState<Movie[]>([])
-
-  const fetchMovies = async (searchParam?: string, page?: number) => {
-    try {
-      setLoading(true);
-
-      const response = await axios.get('https://api.themoviedb.org/3/search/movie', {
-        params: {
-          api_key: apiKey,
-          query: searchParam || 'return',
-          page: page || 1,
-        },
-      });
-
-      const result = await response.data.results;
-
-      const moviesWithGenres = await getMoviesWithGenres(result);
+export const getRatedMovies = async (token: string, page = 1,  ) => {
+  const response = await axios.get(`https://api.themoviedb.org/3/guest_session/${token}/rated/movies?api_key=${apiKey}&language=en-US&sort_by=created_at.asc&page=${page}`);
+  return response
+}
 
 
-
-      setMovies(moviesWithGenres);
-      setPage(response.data.page);
-      setTotalPage(response.data.total_pages);
-    } catch (error) {
-      setError(`${error} - error`);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getRatedMovies = async(sessionId: string) => {
-    setLoading(true);
-    try {
-      const response = await axios.get(`https://api.themoviedb.org/3/guest_session/${sessionId}/rated/movies?api_key=${apiKey}`);
-      const results = await response.data.results;
-      const moviesWithGenres = await getMoviesWithGenres(results);
-      setRatedMovies(moviesWithGenres);
-    } catch (error) {
-      setError(`${error} - error`);
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handlePageUp = (searhParam: string, page: number) => {
-    setPage(page);
-    fetchMovies(searhParam, page);
-  };
-
-  return {
-    movies,
-    error,
-    loading,
-    page,
-    totalPage,
-    handlePageUp,
-    fetchMovies,
-    getRatedMovies,
-    ratedMovies,
-  };
-};
-
-const getMoviesWithGenres = async (data: Movie[]): Promise<Movie[]> => {
-  const moviesWithGenres = await Promise.all(
-    data.map(async (el) => {
-      const response = await axios.get(`https://api.themoviedb.org/3/movie/${el.id}`, {
-        params: {
-          api_key: apiKey,
-        },
-      });
-      const { genres } = response.data;
-      return {
-        ...el,
-        genres,
-      };
+const getResources = async (url:string, query?: string, page?: number) => {
+    const response = await axios.get(`${statickUrl}${url}`, {
+      params: {
+        api_key: apiKey,
+        query: query || 'return',
+        page: page  || 1
+      }
     })
-  );
+    return response
+  };
 
-  return moviesWithGenres;
-};
+export const getMovies =  (searchParam: string, page: number) => {
+  return getResources('/search/movie', searchParam, page);
+}
 
-export const postRating = async (id: number, rate: number, token: string) => {
-  await fetch(
+export const setGuestSession = async () => {
+  const token = await axios.get(`${statickUrl}/authentication/guest_session/new`,{
+    params: {
+      api_key: apiKey
+    }
+  });
+  localStorage.setItem('token', token.data.guest_session_id)
+}
+
+export const getGenres = () => {
+  return getResources(`/genre/movie/list`);
+}
+
+export const postRate = async (id: number, rate: number, token: string) => {
+  const response = await fetch(`https://api.themoviedb.org/3/movie/${id}/rating?api_key=${apiKey}&guest_session_id=${token}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json;charset=utf-8"
+    }, body: JSON.stringify({
+      value: rate
+    })});
+  return response
+}
+
+export const deleteRating = async(id: number, token: string) => {
+  const response = await fetch(
     `https://api.themoviedb.org/3/movie/${id}/rating?api_key=${apiKey}&guest_session_id=${token}`,
     {
-      method: 'POST',
+      method: "DELETE",
       headers: {
-        'Content-Type': 'application/json;charset=utf-8',
+        "Content-Type": "application/json;charset=utf-8",
       },
-      body: JSON.stringify({
-        value: rate,
-      }),
     }
   );
-};
-
-
-
-export const getGuestSessions = async () => {
-  const response = await axios.get('https://api.themoviedb.org/3/authentication/guest_session/new', {
-    params: {
-      api_key: apiKey,
-    },
-  });
-  const token = await response.data.guest_session_id;
-  localStorage.setItem('token', token);
-};
-
-export default useFetchingMovies;
+  return response;
+}
