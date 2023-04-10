@@ -6,7 +6,7 @@ import './MovieList.scss';
 
 type MovieListProps = {
   movies: Movie[];
-  onRate: (id: number, value: number)=> void
+  onRate: (id: number, value: number) => void;
 };
 
 const MovieList: React.FC<MovieListProps> = ({ movies, onRate }) => (

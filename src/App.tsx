@@ -1,4 +1,4 @@
-import { getGenres, getMovies, getRatedMovies, setGuestSession, postRate, deleteRating } from "./api/apiServices";
+import { getGenres, getMovies, getRatedMovies, setGuestSession, postRate, deleteRating, setrate } from "./api/apiServices";
 import { useEffect, useMemo, useState } from 'react';
 import { Genres } from "./types/Genres";
 import {Online, Offline} from "react-detect-offline";
@@ -74,16 +74,19 @@ function App(): JSX.Element {
   const onRateMovies = async (id: number, value: number) => {
     if(value > 0) {
       await postRate(id, value, tokenStr);
-      localStorage.setItem(id.toString(), value.toString());
+      setrate(id.toString(), value.toString());
       const raitedMoviess= await getRatedMovies(tokenStr).then(res=>res.data.results);
       setRatedMovies(raitedMoviess)
-      
     } else {
        await deleteRating(id, tokenStr);
       localStorage.removeItem(id.toString());
       const raitedMoviess= await getRatedMovies(tokenStr).then(res=>res.data.results);
       setRatedMovies(raitedMoviess)
     }
+  };
+  const onPagRatedChange = (value: number) => {
+    setPage(value);
+    getMoviesByRate(value)
   }
   
 
@@ -99,6 +102,9 @@ function App(): JSX.Element {
     getMoviesBySearch();
   },[searchQuery, page])
 
+  useEffect(()=>{
+    getRatedMovies(tokenStr)
+  })
   const displayError = error ? <Alert message='something is wrong' /> : null;
   const load = loading ? <Spin size="large"/> : null;
   const moviesList = movies.length ? <MovieList movies={movies} onRate={onRateMovies}/> : null;
@@ -113,6 +119,7 @@ function App(): JSX.Element {
         {displayError}
         {load}
         {moviesList}
+        <Pagination current={page} total={totalPages*10} showSizeChanger={false} onChange={val=>setPage(val)}/>
         </div>
       ),
     },
@@ -122,6 +129,7 @@ function App(): JSX.Element {
       children: (
         <div className="container">
         <MovieList movies={ratedMovies} onRate={onRateMovies}/>
+        <Pagination current={page} total={totalPagesRate*10} showSizeChanger={false} onChange={onPagRatedChange}/>
       </div>
       ),
     },
@@ -131,7 +139,7 @@ function App(): JSX.Element {
       <div className="App">
         <Provider value={genres}>
           <Online>
-          <Tabs defaultActiveKey="1" items={items}  onChange={onTabsChange} centered/>
+          <Tabs defaultActiveKey="1" items={items}  onChange={onTabsChange} centered />
           </Online>
           <Offline>
             <Alert message="check ur internet-connection" type="error"/>

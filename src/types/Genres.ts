@@ -1,4 +1,4 @@
 export type Genres = {
-  id: string,
-  name: string
-}
+  id: string;
+  name: string;
+};

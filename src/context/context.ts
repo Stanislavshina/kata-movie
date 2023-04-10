@@ -1,5 +1,5 @@
-import { createContext } from "react";
-import { Genres } from "../types/Genres";
+import { createContext } from 'react';
+import { Genres } from '../types/Genres';
 
 const { Provider, Consumer } = createContext<Genres[]>([]);
 
